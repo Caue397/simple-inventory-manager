@@ -20,3 +20,5 @@ export type DashboardStats = {
   totalMovements: number
   lowStockCount: number
 }
+
+export type LowStockProduct = Pick<Product, 'id' | 'name' | 'sku' | 'currentStock' | 'minStock'>

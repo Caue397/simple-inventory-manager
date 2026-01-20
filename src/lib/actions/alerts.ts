@@ -1,8 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import type { LowStockProduct } from '@/types'
 
-export async function getLowStockProducts(companyId: string) {
+export async function getLowStockProducts(companyId: string): Promise<LowStockProduct[]> {
   const products = await prisma.product.findMany({
     where: { companyId },
     select: {
