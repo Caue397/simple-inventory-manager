@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import type { LowStockProduct } from '@/types'
 
 export async function getLowStockProducts(companyId: string): Promise<LowStockProduct[]> {
-  const products = await prisma.product.findMany({
+  const products: LowStockProduct[] = await prisma.product.findMany({
     where: { companyId },
     select: {
       id: true,
@@ -15,14 +15,14 @@ export async function getLowStockProducts(companyId: string): Promise<LowStockPr
     },
   })
 
-  return products.filter((p) => p.currentStock < p.minStock)
+  return products.filter((p: LowStockProduct) => p.currentStock < p.minStock)
 }
 
-export async function getLowStockCount(companyId: string) {
-  const products = await prisma.product.findMany({
+export async function getLowStockCount(companyId: string): Promise<number> {
+  const products: { currentStock: number; minStock: number }[] = await prisma.product.findMany({
     where: { companyId },
     select: { currentStock: true, minStock: true },
   })
 
-  return products.filter((p) => p.currentStock < p.minStock).length
+  return products.filter((p: { currentStock: number; minStock: number }) => p.currentStock < p.minStock).length
 }
