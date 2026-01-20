@@ -22,3 +22,16 @@ export type DashboardStats = {
 }
 
 export type LowStockProduct = Pick<Product, 'id' | 'name' | 'sku' | 'currentStock' | 'minStock'>
+
+export type ProductMovement = StockMovement & {
+  user: Pick<User, 'name'>
+}
+
+export type ProductWithDetails = Omit<Product, 'price'> & {
+  price: number | null
+  stockMovements: ProductMovement[]
+}
+
+export type SerializedProduct = Omit<Product, 'price'> & {
+  price: number | null
+}

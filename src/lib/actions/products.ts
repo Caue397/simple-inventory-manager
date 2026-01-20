@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { productSchema } from '@/lib/validations/product'
 import { revalidatePath } from 'next/cache'
 import type { Product as PrismaProduct } from '@prisma/client'
+import type { ProductWithDetails } from '@/types'
 
 // Helper to serialize Decimal to number for client components
 function serializeProduct<T extends PrismaProduct>(product: T): T & { price: number | null } {
@@ -46,7 +47,7 @@ export async function getProducts(companyId: string, params: GetProductsParams =
   return serializeProducts(products)
 }
 
-export async function getProduct(id: string, companyId: string) {
+export async function getProduct(id: string, companyId: string): Promise<ProductWithDetails | null> {
   const product = await prisma.product.findFirst({
     where: { id, companyId },
     include: {
@@ -60,7 +61,7 @@ export async function getProduct(id: string, companyId: string) {
 
   if (!product) return null
 
-  return serializeProduct(product)
+  return serializeProduct(product) as ProductWithDetails
 }
 
 export async function createProduct(companyId: string, data: unknown) {

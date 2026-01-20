@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
-import type { Product } from '@/types'
+import type { SerializedProduct } from '@/types'
 
 interface ProductFormProps {
-  product?: Product
+  product?: SerializedProduct
   companyId: string
 }
 
