@@ -40,7 +40,7 @@ export async function getProducts(companyId: string, params: GetProductsParams =
 
   // Filter low stock in code (Prisma doesn't compare fields directly)
   if (filter === 'low-stock') {
-    return serializeProducts(products.filter(p => p.currentStock < p.minStock))
+    return serializeProducts(products.filter((p: { currentStock: number; minStock: number }) => p.currentStock < p.minStock))
   }
 
   return serializeProducts(products)
