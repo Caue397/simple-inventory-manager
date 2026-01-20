@@ -1,0 +1,75 @@
+// Prisma Schema for Simple Inventory Manager
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  name           String?
+  avatarUrl      String?
+  companyId      String?
+  company        Company?        @relation(fields: [companyId], references: [id])
+  stockMovements StockMovement[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([companyId])
+  @@index([email])
+}
+
+model Company {
+  id        String    @id @default(uuid())
+  name      String
+  document  String?
+  phone     String?
+  address   String?
+  users     User[]
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id             String          @id @default(uuid())
+  name           String
+  description    String?
+  sku            String?
+  price          Decimal?        @db.Decimal(10, 2)
+  minStock       Int             @default(0)
+  currentStock   Int             @default(0)
+  companyId      String
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  stockMovements StockMovement[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([companyId])
+  @@index([sku])
+}
+
+model StockMovement {
+  id        String       @id @default(uuid())
+  type      MovementType
+  quantity  Int
+  reason    String?
+  productId String
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  createdAt DateTime     @default(now())
+
+  @@index([productId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum MovementType {
+  IN
+  OUT
+}
