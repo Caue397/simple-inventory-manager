@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { companySchema } from '@/lib/validations/company'
 import { revalidatePath } from 'next/cache'
+import type { Prisma } from '@prisma/client'
 
 interface CreateCompanyInput {
   name: string
@@ -23,7 +24,7 @@ export async function createCompany(input: CreateCompanyInput) {
     })
 
     // Create company and link user in a transaction
-    const company = await prisma.$transaction(async (tx) => {
+    const company = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const newCompany = await tx.company.create({
         data: {
           name: validated.name,

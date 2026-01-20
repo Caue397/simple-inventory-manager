@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { movementSchema } from '@/lib/validations/movement'
 import { revalidatePath } from 'next/cache'
+import type { Prisma } from '@prisma/client'
 
 interface GetMovementsParams {
   type?: 'IN' | 'OUT'
@@ -63,7 +64,7 @@ export async function createMovement(data: unknown, userId: string) {
         : product.currentStock - validated.quantity
 
     // Create movement and update stock in a transaction
-    const movement = await prisma.$transaction(async (tx) => {
+    const movement = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const newMovement = await tx.stockMovement.create({
         data: {
           type: validated.type,

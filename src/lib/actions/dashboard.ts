@@ -27,7 +27,7 @@ export async function getMonthlyMovements(companyId: string) {
   }
 
   // Count movements per month
-  movements.forEach(m => {
+  movements.forEach((m: { createdAt: Date }) => {
     const date = new Date(m.createdAt)
     const key = `${date.getFullYear()}-${date.getMonth()}`
     if (key in monthlyData) {
@@ -86,7 +86,8 @@ export async function getDashboardData(companyId: string) {
   ])
 
   // Calculate low stock products (Prisma doesn't support comparing fields directly)
-  const lowStockProducts = products.filter(p => p.currentStock < p.minStock)
+  type ProductStock = { id: string; name: string; sku: string | null; currentStock: number; minStock: number }
+  const lowStockProducts = products.filter((p: ProductStock) => p.currentStock < p.minStock)
 
   // Total movements in last 30 days
   const totalMovements = await prisma.stockMovement.count({
