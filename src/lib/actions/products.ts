@@ -3,18 +3,17 @@
 import { prisma } from '@/lib/prisma'
 import { productSchema } from '@/lib/validations/product'
 import { revalidatePath } from 'next/cache'
-import type { Product as PrismaProduct } from '@prisma/client'
-import type { ProductWithDetails } from '@/types'
+import type { Product, ProductWithDetails } from '@/types'
 
 // Helper to serialize Decimal to number for client components
-function serializeProduct<T extends PrismaProduct>(product: T): T & { price: number | null } {
+function serializeProduct<T extends Product>(product: T): T & { price: number | null } {
   return {
     ...product,
     price: product.price ? Number(product.price) : null,
   }
 }
 
-function serializeProducts<T extends PrismaProduct>(products: T[]): (T & { price: number | null })[] {
+function serializeProducts<T extends Product>(products: T[]): (T & { price: number | null })[] {
   return products.map(serializeProduct)
 }
 

@@ -1,6 +1,16 @@
-import type { User, Company, Product, StockMovement } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-export type { User, Company, Product, StockMovement }
+// Infer types from Prisma client
+type PrismaUser = Awaited<ReturnType<typeof prisma.user.findFirst>> & {}
+type PrismaCompany = Awaited<ReturnType<typeof prisma.company.findFirst>> & {}
+type PrismaProduct = Awaited<ReturnType<typeof prisma.product.findFirst>> & {}
+type PrismaStockMovement = Awaited<ReturnType<typeof prisma.stockMovement.findFirst>> & {}
+
+// Base types
+export type User = NonNullable<PrismaUser>
+export type Company = NonNullable<PrismaCompany>
+export type Product = NonNullable<PrismaProduct>
+export type StockMovement = NonNullable<PrismaStockMovement>
 
 export type ProductWithMovements = Product & {
   stockMovements: StockMovement[]
@@ -11,8 +21,8 @@ export type UserWithCompany = User & {
 }
 
 export type MovementWithDetails = StockMovement & {
-  product: Pick<Product, 'name' | 'sku'>
-  user: Pick<User, 'name'>
+  product: { name: string; sku: string | null }
+  user: { name: string | null }
 }
 
 export type DashboardStats = {
@@ -21,10 +31,16 @@ export type DashboardStats = {
   lowStockCount: number
 }
 
-export type LowStockProduct = Pick<Product, 'id' | 'name' | 'sku' | 'currentStock' | 'minStock'>
+export type LowStockProduct = {
+  id: string
+  name: string
+  sku: string | null
+  currentStock: number
+  minStock: number
+}
 
 export type ProductMovement = StockMovement & {
-  user: Pick<User, 'name'>
+  user: { name: string | null }
 }
 
 export type ProductWithDetails = Omit<Product, 'price'> & {
